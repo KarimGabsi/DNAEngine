@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DNAEngine.GUI;
+using DNAEngine.Machine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,7 @@ namespace DNAEngine.Core
 {
     class Core
     {
+        [STAThread]
         static void Main(string[] args)
         {
             Console.WriteLine("DNA Engine");
@@ -25,6 +28,9 @@ namespace DNAEngine.Core
 
             Console.WriteLine("Amino Acids:");
             Console.WriteLine(string.Join(" - ", DNAMachine.AminoAcids));
+
+            var app = new App();
+            app.Run(new DNAVisual(DNAMachine));
         }
     }
 }

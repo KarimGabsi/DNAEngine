@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNAEngine.Core
+namespace DNAEngine.Machine
 {
     public class DNAMachine
     {
@@ -63,7 +62,7 @@ namespace DNAEngine.Core
                 ReadTRNASequence();
                 ReadAminoAcids();
             }
-            
+
         }
 
         private void WriteDNASequence(string dnaFile)
@@ -75,15 +74,15 @@ namespace DNAEngine.Core
             neucleotides.Add(3, "G");
 
             int BasePairs = 300;
-            
+
             using (StreamWriter file = new StreamWriter(filepath + @"\" + dnaFile))
             {
-                for (int i = 0; i < (BasePairs/2); i++)
+                for (int i = 0; i < (BasePairs / 2); i++)
                 {
                     int neucleotide = RandomNumber(0, 4);
                     string test = neucleotides[neucleotide];
                     file.Write(neucleotides[neucleotide]);
-                }             
+                }
             }
         }
         //Function to get a random number 
@@ -258,4 +257,5 @@ namespace DNAEngine.Core
             return codonCode;
         }
     }
+
 }
