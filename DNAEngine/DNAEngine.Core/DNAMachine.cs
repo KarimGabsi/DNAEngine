@@ -158,6 +158,7 @@ namespace DNAEngine.Core
                 if (codon.Length == 3)
                 {
                     _AminoAcids.Add(codonCode[codon]);
+                    codon = "";
                 }
             }
             return _AminoAcids;

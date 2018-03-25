@@ -22,6 +22,9 @@ namespace DNAEngine.Core
 
             Console.WriteLine("TRNA Data:");
             Console.WriteLine(DNAMachine.TRNADATA);
+
+            Console.WriteLine("Amino Acids:");
+            Console.WriteLine(string.Join(" - ", DNAMachine.AminoAcids));
         }
     }
 }
