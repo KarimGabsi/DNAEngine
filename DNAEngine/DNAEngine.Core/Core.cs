@@ -29,6 +29,12 @@ namespace DNAEngine.Core
             Console.WriteLine("Amino Acids:");
             Console.WriteLine(string.Join(" - ", DNAMachine.AminoAcids));
 
+            Console.WriteLine("Peptine Bonds:");
+            foreach(List<string> pb in DNAMachine.PeptineBonds)
+            {
+                Console.WriteLine(string.Join(" - ", pb));
+            }
+
             var app = new App();
             app.Run(new DNAVisual(DNAMachine));
         }

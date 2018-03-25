@@ -50,6 +50,31 @@ namespace DNAEngine.GUI
 
                 AminoAcids_ListBox.Items.Add(aa);
             }
+
+            foreach (List<string> pb in DNAMachine.PeptineBonds)
+            {
+                foreach (string aminoacid in pb)
+                {
+                    ListBox aa = new ListBox();
+                    ListBoxItem aaName = new ListBoxItem() { Content = aminoacid };
+
+
+                    Image img = new Image();
+                    BitmapImage pic = new BitmapImage();
+                    pic.BeginInit();
+                    pic.UriSource = new Uri("pack://application:,,,/DNAEngine.GUI;component/AminoAcids/" + aminoacid + ".png");
+                    pic.EndInit();
+
+                    img.Source = pic;
+
+                    ListBoxItem aaPic = new ListBoxItem() { Content = img };
+
+                    aa.Items.Add(aaName);
+                    aa.Items.Add(aaPic);
+
+                    PeptineBonds_ListBox.Items.Add(aa);
+                }
+            }
         }
     }
 }

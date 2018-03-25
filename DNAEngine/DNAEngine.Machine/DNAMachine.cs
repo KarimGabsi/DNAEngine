@@ -33,6 +33,12 @@ namespace DNAEngine.Machine
             get { return _AminoAcids; }
         }
 
+        private List<List<string>> _PeptineBonds;
+        public List<List<string>> PeptineBonds
+        {
+            get { return _PeptineBonds; }
+        }
+
         string filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private string DNASequenceFile = "DNASequence.txt";
         private string mRNASequenceFile = "mDNASequence.txt";
@@ -53,6 +59,7 @@ namespace DNAEngine.Machine
                 ReadMRNASequence();
                 ReadTRNASequence();
                 ReadAminoAcids();
+                ReadPeptineBonds();
             }
             else
             {
@@ -61,6 +68,7 @@ namespace DNAEngine.Machine
                 ReadMRNASequence();
                 ReadTRNASequence();
                 ReadAminoAcids();
+                ReadPeptineBonds();
             }
 
         }
@@ -162,6 +170,37 @@ namespace DNAEngine.Machine
             }
             return _AminoAcids;
         }
+        private List<List<string>> ReadPeptineBonds()
+        {
+            if (_AminoAcids == null)
+                throw new Exception("No Aminoacid Sequence to read.");
+
+            _PeptineBonds = new List<List<string>>();
+            List<string> peptidebond = new List<string>();
+            bool readMode = false;
+            foreach (string aa in _AminoAcids)
+            {
+                if (isStart(aa))
+                {
+                    readMode = true;
+                }
+                else if (isStop(aa))
+                {
+                    if (readMode)
+                    {
+                        peptidebond.Add(aa);
+                        _PeptineBonds.Add(peptidebond);
+                    }
+                    readMode = false;
+                }
+
+                if (readMode)
+                {
+                    peptidebond.Add(aa);
+                }
+            }
+            return _PeptineBonds;
+        }
         private Dictionary<string, string> GetCodonCode()
         {
             Dictionary<string, string> codonCode = new Dictionary<string, string>();
@@ -255,6 +294,21 @@ namespace DNAEngine.Machine
             #endregion
 
             return codonCode;
+        }
+
+        private bool isStart(string aminoacid)
+        {
+            if (aminoacid == "Methionine")
+                return true;
+            else
+                return false;
+        }
+        private bool isStop(string aminoacid)
+        {
+            if (aminoacid == "Stop")
+                return true;
+            else
+                return false;
         }
     }
 

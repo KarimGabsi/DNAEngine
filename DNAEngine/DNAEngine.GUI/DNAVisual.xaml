@@ -15,18 +15,28 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="DNA Data:"/>
         <Label Grid.Row="1" Grid.Column="0" Content="MRNA Data:"/>
         <Label Grid.Row="2" Grid.Column="0" Content="TRNA Data"/>
         <Label Grid.Row="3" Grid.Column="0" Content="Amino Acids"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="Peptine Bonds"/>
 
         <Label x:Name="DNAData_Label" Grid.Row="0" Grid.Column="1"/>
         <Label x:Name="MRNAData_Label" Grid.Row="1" Grid.Column="1"/>
         <Label x:Name="TRNAData_Label" Grid.Row="2" Grid.Column="1"/>
         
-        <ListBox x:Name="AminoAcids_ListBox" Grid.Column="4" Grid.Row="3" ScrollViewer.HorizontalScrollBarVisibility="Visible">
+        <ListBox x:Name="AminoAcids_ListBox" Grid.Column="1" Grid.Row="3" ScrollViewer.HorizontalScrollBarVisibility="Visible">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+
+        <ListBox x:Name="PeptineBonds_ListBox" Grid.Column="1" Grid.Row="4" ScrollViewer.HorizontalScrollBarVisibility="Visible">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True" />
