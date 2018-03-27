@@ -63,7 +63,6 @@ namespace DNAEngine.Machine
             }
             else
             {
-                WriteDNASequence(DNAFile);
                 ReadDNASequence(DNAFile);
                 ReadMRNASequence();
                 ReadTRNASequence();
