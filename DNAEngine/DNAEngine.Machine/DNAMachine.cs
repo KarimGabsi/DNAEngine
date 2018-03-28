@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,175 +10,200 @@ namespace DNAEngine.Machine
 {
     public class DNAMachine
     {
-        private string _DNAData;
-        public string DNAData
+        private byte[] _DNAData;
+        public byte[] DNAData
         {
             get { return _DNAData; }
+            set { _DNAData = value; }
         }
 
-        private string _MRNAData;
-        public string MRNADATA
-        {
-            get { return _MRNAData; }
-        }
+        static readonly Dictionary<char, byte> _DNALetters = new Dictionary<char, byte> {
+            { 'A', 0},
+            { 'T', 1},
+            { 'C', 2},
+            { 'G', 3}};
+        static readonly Dictionary<int, char> _ReverseDNALetters = new Dictionary<int, char> {
+            {0, 'A'},
+            {1, 'T'},
+            {2, 'C'},
+            {3, 'G'}};
+        static readonly Dictionary<char, byte> _MRNALetters = new Dictionary<char, byte> {
+            { 'U', 0},
+            { 'A', 1},
+            { 'G', 2},
+            { 'C', 3}};
+        static readonly Dictionary<int, char> _ReverseMRNALetters = new Dictionary<int, char> {
+            {0, 'U'},
+            {1, 'A'},
+            {2, 'G'},
+            {3, 'C'}};
+        static readonly Dictionary<char, byte> _TRNALetters = new Dictionary<char, byte> {
+            { 'A', 0},
+            { 'U', 1},
+            { 'C', 2},
+            { 'G', 3}};
+        static readonly Dictionary<int, char> _ReverseTRNALetters = new Dictionary<int, char> {
+            {0, 'A'},
+            {1, 'U'},
+            {2, 'C'},
+            {3, 'G'}};
 
-        private string _TRNAData;
-        public string TRNADATA
-        {
-            get { return _TRNAData; }
-        }
-
-        private List<string> _AminoAcids;
-        public List<string> AminoAcids
-        {
-            get { return _AminoAcids; }
-        }
-
-        private List<List<string>> _PeptineBonds;
-        public List<List<string>> PeptineBonds
-        {
-            get { return _PeptineBonds; }
-        }
-
-        string filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private string DNASequenceFile = "DNASequence.txt";
-        private string mRNASequenceFile = "mDNASequence.txt";
-        private string TRNASequenceFile = "tDNASequence.txt";
+        private static readonly Random random = new Random();
 
         public DNAMachine()
         {
 
         }
 
-        public void Start(string DNAFile)
+        //public DNAMachine(string DNAFile)
+        //{
+        //    if (String.IsNullOrEmpty(DNAFile))
+        //    {
+        //        string filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //        string DNASequenceFile = "DNASequenceGenerated.dna";
+        //        WriteDNASequence(filepath + @"\" + DNASequenceFile);
+        //    }
+        //    else
+        //    {
+        //        _DNAData = File.ReadAllBytes(DNAFile);
+        //    }
+        //}
+        public void GenerateAndLoadDNASequence(string dnaFile)
         {
-            //Did we receive a DNA File? If not, generate random DNA
-            if (String.IsNullOrEmpty(DNAFile))
-            {
-                WriteDNASequence(DNASequenceFile);
-                ReadDNASequence(DNASequenceFile);
-                ReadMRNASequence();
-                ReadTRNASequence();
-                ReadAminoAcids();
-                ReadPeptineBonds();
-            }
-            else
-            {
-                ReadDNASequence(DNAFile);
-                ReadMRNASequence();
-                ReadTRNASequence();
-                ReadAminoAcids();
-                ReadPeptineBonds();
-            }
+            long BasePairs = 3000000000;
+            FileStream fileStream = new FileStream(dnaFile, FileMode.Create);
 
+            long chunkSize = (BasePairs / 2) / 4; // 8 million pairs at once (since each byte is 4 nucleotides)
+
+            byte[] chunk = new byte[chunkSize];
+            random.NextBytes(chunk);
+            fileStream.Write(chunk, 0, chunk.Length);
+            
+            fileStream.Close();
+
+            _DNAData = File.ReadAllBytes(dnaFile);
         }
-
-        private void WriteDNASequence(string dnaFile)
+        public void LoadDNASequence(string dnaFile)
         {
-            Dictionary<int, string> neucleotides = new Dictionary<int, string>();
-            neucleotides.Add(0, "A");
-            neucleotides.Add(1, "T");
-            neucleotides.Add(2, "C");
-            neucleotides.Add(3, "G");
+            _DNAData = File.ReadAllBytes(dnaFile);
+        }
+        public byte[] StringToDNA(string dnaString, string outputfilelocation)
+        {
+            List<byte> dnaData = new List<byte>();
 
-            int BasePairs = 300;
+            int remainder = dnaString.Length % 4;
 
-            using (StreamWriter file = new StreamWriter(filepath + @"\" + dnaFile))
+            if (remainder == 1)
             {
-                for (int i = 0; i < (BasePairs / 2); i++)
+                byte one = Convert.ToByte(64);// 0100 0000 => 64
+                dnaData.Add(one);
+            }
+            else if (remainder == 2)
+            {
+                byte two = Convert.ToByte(16);// 0001 0000 => 16
+                dnaData.Add(two);
+            }
+            else if (remainder == 3)
+            {
+                byte three = Convert.ToByte(4);// 0000 0100 => 4
+                dnaData.Add(three);
+            }
+
+            byte packed = 0;
+            FileStream fileStream = new FileStream(outputfilelocation, FileMode.Create);
+
+            for (int s = 0; s < dnaString.Length; s+=4)
+            {
+                string toPack = "";
+                if ((s + 4) <= dnaString.Length)
                 {
-                    int neucleotide = RandomNumber(0, 4);
-                    string test = neucleotides[neucleotide];
-                    file.Write(neucleotides[neucleotide]);
+                    toPack = dnaString.Substring(s, 4);
                 }
+                else
+                {
+                    for (int i = 0; i <= (dnaString.Length - s); i++)
+                    {
+                        toPack += "A";
+                    }
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    packed = (byte)(packed | _DNALetters[toPack[i]] << (i * 2));
+                }
+                dnaData.Add(packed);
             }
+            fileStream.Write(dnaData.ToArray(), 0, dnaData.ToArray().Length);
+            fileStream.Close();
+            return dnaData.ToArray();
+            
         }
-        //Function to get a random number 
-        private static readonly Random random = new Random();
-        private static readonly object syncLock = new object();
-        public static int RandomNumber(int min, int max)
+        public string Read(int begin, int end, Language language)
         {
-            lock (syncLock)
-            { // synchronize
-                return random.Next(min, max);
-            }
-        }
-        private string ReadDNASequence(string dnaFile)
-        {
-            _DNAData = "";
-            using (StreamReader file = new StreamReader(filepath + @"\" + dnaFile))
+            string output = "";
+            for (int i = begin; i <= end; i++)
             {
-                _DNAData = file.ReadToEnd();
+                output += UnPack(DNAData[i], language);
             }
-            return _DNAData;
+            return output;
         }
-        private string ReadMRNASequence()
+        private string UnPack(byte pack, Language language)
         {
-            if (String.IsNullOrEmpty(_DNAData))
-                throw new Exception("No DNA Sequence to read.");
-
-            Dictionary<string, string> mRNACode = new Dictionary<string, string>();
-            mRNACode.Add("A", "U");
-            mRNACode.Add("T", "A");
-            mRNACode.Add("C", "G");
-            mRNACode.Add("G", "C");
-
-            _MRNAData = "";
-            foreach (char letter in _DNAData)
+            string unpacked;
+            switch (language)
             {
-                _MRNAData += mRNACode[letter.ToString()];
+                case Language.DNA:
+                    unpacked = new string(new[] {
+                        _ReverseDNALetters[pack & 0b11],
+                        _ReverseDNALetters[(pack & 0b1100) >> 2],
+                        _ReverseDNALetters[(pack & 0b110000) >> 4],
+                        _ReverseDNALetters[(pack & 0b11000000) >> 6],});
+                    break;
+                case Language.MRNA:
+                    unpacked = new string(new[] {
+                        _ReverseMRNALetters[pack & 0b11],
+                        _ReverseMRNALetters[(pack & 0b1100) >> 2],
+                        _ReverseMRNALetters[(pack & 0b110000) >> 4],
+                        _ReverseMRNALetters[(pack & 0b11000000) >> 6],});
+                    break;
+                case Language.TRNA:
+                    unpacked = new string(new[] {
+                        _ReverseTRNALetters[pack & 0b11],
+                        _ReverseTRNALetters[(pack & 0b1100) >> 2],
+                        _ReverseTRNALetters[(pack & 0b110000) >> 4],
+                        _ReverseTRNALetters[(pack & 0b11000000) >> 6],});
+                    break;
+                default:
+                    unpacked = "No language given";
+                    break;
             }
-
-            return _MRNAData;
-        }
-        private string ReadTRNASequence()
-        {
-            if (String.IsNullOrEmpty(_MRNAData))
-                throw new Exception("No MRNA Sequence to read.");
-
-            Dictionary<string, string> tRNACode = new Dictionary<string, string>();
-            tRNACode.Add("A", "U");
-            tRNACode.Add("U", "A");
-            tRNACode.Add("C", "G");
-            tRNACode.Add("G", "C");
-
-            _TRNAData = "";
-            foreach (char letter in _MRNAData)
-            {
-                _TRNAData += tRNACode[letter.ToString()];
-            }
-
-            return _TRNAData;
+            return unpacked;
+            
         }
 
-        private List<string> ReadAminoAcids()
+        public List<string> ReadAminoAcids(int begin, int end)
         {
-            if (String.IsNullOrEmpty(_TRNAData))
-                throw new Exception("No TRNA Sequence to read.");
-
-            _AminoAcids = new List<string>();
-            string codon = "";
+            string tRNASequence = Read(begin, end, Language.TRNA);
             Dictionary<string, string> codonCode = GetCodonCode();
-            foreach (char letter in _TRNAData)
+            List<string> aminoacides = new List<string>();
+            string codon = "";
+            foreach (char letter in tRNASequence)
             {
                 codon += letter;
                 if (codon.Length == 3)
                 {
-                    _AminoAcids.Add(codonCode[codon]);
+                    aminoacides.Add(codonCode[codon]);
                     codon = "";
                 }
             }
-            return _AminoAcids;
+            return aminoacides;
         }
-        private List<List<string>> ReadPeptineBonds()
+        public List<List<string>> ReadPeptineBonds(int begin, int end)
         {
-            if (_AminoAcids == null)
-                throw new Exception("No Aminoacid Sequence to read.");
-
-            _PeptineBonds = new List<List<string>>();
+            List<string> aminoacids = ReadAminoAcids(begin, end);
+            List<List<string>> peptidebonds = new List<List<string>>();
             List<string> peptidebond = new List<string>();
             bool readMode = false;
-            foreach (string aa in _AminoAcids)
+            foreach (string aa in aminoacids)
             {
                 if (isStart(aa))
                 {
@@ -188,7 +214,7 @@ namespace DNAEngine.Machine
                     if (readMode)
                     {
                         peptidebond.Add(aa);
-                        _PeptineBonds.Add(peptidebond);
+                        peptidebonds.Add(peptidebond);
                     }
                     readMode = false;
                 }
@@ -198,7 +224,7 @@ namespace DNAEngine.Machine
                     peptidebond.Add(aa);
                 }
             }
-            return _PeptineBonds;
+            return peptidebonds;
         }
         private Dictionary<string, string> GetCodonCode()
         {

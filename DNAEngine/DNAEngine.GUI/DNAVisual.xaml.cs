@@ -24,57 +24,57 @@ namespace DNAEngine.GUI
         public DNAVisual(DNAMachine DNAMachine)
         {
             InitializeComponent();
-            DNAData_Label.Content = DNAMachine.DNAData;
-            MRNAData_Label.Content = DNAMachine.MRNADATA;
-            TRNAData_Label.Content = DNAMachine.TRNADATA;
+            //DNAData_Label.Content = DNAMachine.DNAData;
+            //MRNAData_Label.Content = DNAMachine.MRNADATA;
+            //TRNAData_Label.Content = DNAMachine.TRNADATA;
 
 
-            foreach (string aminoacid in DNAMachine.AminoAcids)
-            {
-                ListBox aa = new ListBox();
-                ListBoxItem aaName = new ListBoxItem() { Content = aminoacid };
+            //foreach (string aminoacid in DNAMachine.AminoAcids)
+            //{
+            //    ListBox aa = new ListBox();
+            //    ListBoxItem aaName = new ListBoxItem() { Content = aminoacid };
 
 
-                Image img = new Image();
-                BitmapImage pic = new BitmapImage();
-                pic.BeginInit();
-                pic.UriSource = new Uri("pack://application:,,,/DNAEngine.GUI;component/AminoAcids/" + aminoacid + ".png");
-                pic.EndInit();
+            //    Image img = new Image();
+            //    BitmapImage pic = new BitmapImage();
+            //    pic.BeginInit();
+            //    pic.UriSource = new Uri("pack://application:,,,/DNAEngine.GUI;component/AminoAcids/" + aminoacid + ".png");
+            //    pic.EndInit();
 
-                img.Source = pic;
+            //    img.Source = pic;
 
-                ListBoxItem aaPic = new ListBoxItem() { Content = img };
+            //    ListBoxItem aaPic = new ListBoxItem() { Content = img };
 
-                aa.Items.Add(aaName);
-                aa.Items.Add(aaPic);
+            //    aa.Items.Add(aaName);
+            //    aa.Items.Add(aaPic);
 
-                AminoAcids_ListBox.Items.Add(aa);
-            }
+            //    AminoAcids_ListBox.Items.Add(aa);
+            //}
 
-            foreach (List<string> pb in DNAMachine.PeptineBonds)
-            {
-                foreach (string aminoacid in pb)
-                {
-                    ListBox aa = new ListBox();
-                    ListBoxItem aaName = new ListBoxItem() { Content = aminoacid };
+            //foreach (List<string> pb in DNAMachine.PeptineBonds)
+            //{
+            //    foreach (string aminoacid in pb)
+            //    {
+            //        ListBox aa = new ListBox();
+            //        ListBoxItem aaName = new ListBoxItem() { Content = aminoacid };
 
 
-                    Image img = new Image();
-                    BitmapImage pic = new BitmapImage();
-                    pic.BeginInit();
-                    pic.UriSource = new Uri("pack://application:,,,/DNAEngine.GUI;component/AminoAcids/" + aminoacid + ".png");
-                    pic.EndInit();
+            //        Image img = new Image();
+            //        BitmapImage pic = new BitmapImage();
+            //        pic.BeginInit();
+            //        pic.UriSource = new Uri("pack://application:,,,/DNAEngine.GUI;component/AminoAcids/" + aminoacid + ".png");
+            //        pic.EndInit();
 
-                    img.Source = pic;
+            //        img.Source = pic;
 
-                    ListBoxItem aaPic = new ListBoxItem() { Content = img };
+            //        ListBoxItem aaPic = new ListBoxItem() { Content = img };
 
-                    aa.Items.Add(aaName);
-                    aa.Items.Add(aaPic);
+            //        aa.Items.Add(aaName);
+            //        aa.Items.Add(aaPic);
 
-                    PeptineBonds_ListBox.Items.Add(aa);
-                }
-            }
+            //        PeptineBonds_ListBox.Items.Add(aa);
+            //    }
+            //}
         }
     }
 }

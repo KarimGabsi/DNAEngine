@@ -13,31 +13,43 @@ namespace DNAEngine.Core
         [STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine("DNA Engine");
+            string filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string GeneratedDNASequenceFile = "GenderatedDNASequence.dna";
+            string DNASequenceFile = "DNASequence.dna";
+            string ManualDNASequenceFile = "ManualDNASequence.dna";
+
+
+            Console.WriteLine("DNA Engine Starting up...");
             DNAMachine DNAMachine = new DNAMachine();
-            DNAMachine.Start(""); // Empty, so generate DNA.
-
             Console.WriteLine("DNA Engine started.");
-            //Console.WriteLine("DNA Data:");
-            //Console.WriteLine(DNAMachine.DNAData);
 
-            //Console.WriteLine("MRNA Data:");
-            //Console.WriteLine(DNAMachine.MRNADATA);
+            //Console.WriteLine("Generating  and loading DNA Data...");
+            //DNAMachine.GenerateAndLoadDNASequence(filepath + @"\" + GeneratedDNASequenceFile);
 
-            //Console.WriteLine("TRNA Data:");
-            //Console.WriteLine(DNAMachine.TRNADATA);
+            //Console.WriteLine("Loading DNA Data...");
+            //DNAMachine.LoadDNASequence(filepath + @"\" + DNASequenceFile);
 
-            //Console.WriteLine("Amino Acids:");
-            //Console.WriteLine(string.Join(" - ", DNAMachine.AminoAcids));
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATTC", filepath + @"\" + ManualDNASequenceFile);
+            Console.WriteLine("DNA Data:");
+            Console.WriteLine(DNAMachine.Read(0, 0, Language.DNA) + "...");
 
-            //Console.WriteLine("Peptine Bonds:");
-            //foreach(List<string> pb in DNAMachine.PeptineBonds)
-            //{
-            //    Console.WriteLine(string.Join(" - ", pb));
-            //}
+            Console.WriteLine("MRNA Data:");
+            Console.WriteLine(DNAMachine.Read(0, 0, Language.MRNA) + "...");
 
-            var app = new App();
-            app.Run(new DNAVisual(DNAMachine));
+            Console.WriteLine("TRNA Data:");
+            Console.WriteLine(DNAMachine.Read(0, 0, Language.TRNA) + "...");
+
+            Console.WriteLine("Amino Acids:");
+            Console.WriteLine(string.Join(" - ", DNAMachine.ReadAminoAcids(0,0)));
+
+            Console.WriteLine("Peptine Bonds:");
+            foreach (List<string> pb in DNAMachine.ReadPeptineBonds(0, 0))
+            {
+                Console.WriteLine(string.Join(" - ", pb));
+            }
+
+            //var app = new App();
+            //app.Run(new DNAVisual(DNAMachine));
         }
     }
 }
