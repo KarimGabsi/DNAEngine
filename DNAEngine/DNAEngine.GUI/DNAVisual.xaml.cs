@@ -21,15 +21,59 @@ namespace DNAEngine.GUI
     /// </summary>
     public partial class DNAVisual : Window
     {
-        public DNAVisual(DNAMachine DNAMachine)
+        private static int step = 20;
+        private DNAMachine _DNAMachine;
+        private int beginPosition = 0;
+        private int endPosition = step;
+        public DNAVisual(DNAMachine dnaMachine)
         {
             InitializeComponent();
-            DNAData_Label.Content = DNAMachine.Read(0, (DNAMachine.DNAData.Length -1), Machine.Language.DNA);
-            MRNAData_Label.Content = DNAMachine.Read(0, (DNAMachine.DNAData.Length - 1), Machine.Language.MRNA);
-            TRNAData_Label.Content = DNAMachine.Read(0, (DNAMachine.DNAData.Length - 1), Machine.Language.TRNA);
 
+            _DNAMachine = dnaMachine;
+            ShowData(0,20);           
+        }
+        private void btnStepDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (step > 0)
+            {
+                step--;
+            }
+            lblStep.Content = "STEP: " + step;
+        }
 
-            foreach (string aminoacid in DNAMachine.ReadAminoAcids(0, (DNAMachine.DNAData.Length - 1)))
+        private void btnStepUp_Click(object sender, RoutedEventArgs e)
+        {
+            step++;
+            lblStep.Content = "STEP: " + step;
+
+        }
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+            if ((endPosition + step) <= (_DNAMachine.DNAData.Length - 1))
+            {
+                beginPosition += step;
+                endPosition += step;
+            }
+            ShowData(beginPosition, endPosition);
+        }
+
+        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        {
+            if ((beginPosition - step) >= 0)
+            {
+                beginPosition -= step;
+                endPosition -= step;
+            }
+            ShowData(beginPosition, endPosition);
+        }
+        private void ShowData(int begin, int end)
+        {
+            DNAData_Label.Content = _DNAMachine.Read(begin, end, Machine.Language.DNA);
+            MRNAData_Label.Content = _DNAMachine.Read(begin, end, Machine.Language.MRNA);
+            TRNAData_Label.Content = _DNAMachine.Read(begin, end, Machine.Language.TRNA);
+
+            AminoAcids_ListBox.Items.Clear();
+            foreach (string aminoacid in _DNAMachine.ReadAminoAcids(begin, end))
             {
                 ListBox aa = new ListBox();
                 ListBoxItem aaName = new ListBoxItem() { Content = aminoacid };
@@ -51,7 +95,8 @@ namespace DNAEngine.GUI
                 AminoAcids_ListBox.Items.Add(aa);
             }
 
-            foreach (List<string> pb in DNAMachine.ReadPeptineBonds(0, (DNAMachine.DNAData.Length - 1)))
+            PeptineBonds_ListBox.Items.Clear();
+            foreach (List<string> pb in _DNAMachine.ReadPeptineBonds(begin, end))
             {
                 foreach (string aminoacid in pb)
                 {
@@ -77,4 +122,6 @@ namespace DNAEngine.GUI
             }
         }
     }
+
+
 }

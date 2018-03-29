@@ -26,25 +26,25 @@ namespace DNAEngine.Core
             //Console.WriteLine("Generating  and loading DNA Data...");
             //DNAMachine.GenerateAndLoadDNASequence(filepath + @"\" + GeneratedDNASequenceFile);
 
-            //Console.WriteLine("Loading DNA Data...");
-            //DNAMachine.LoadDNASequence(filepath + @"\" + DNASequenceFile);
+            Console.WriteLine("Loading DNA Data...");
+            DNAMachine.LoadDNASequence(filepath + @"\" + DNASequenceFile);
 
-            DNAMachine.DNAData = DNAMachine.StringToDNA("TTTCAGTATCTT", filepath + @"\" + ManualDNASequenceFile);
+            //DNAMachine.DNAData = DNAMachine.StringToDNA("TTTCAGTATCTT", filepath + @"\" + ManualDNASequenceFile);
 
             Console.WriteLine("DNA Data:");
-            Console.WriteLine(DNAMachine.Read(0, (DNAMachine.DNAData.Length -1), Language.DNA) + "...");
+            Console.WriteLine(DNAMachine.Read(0, 20, Language.DNA) + "...");
 
             Console.WriteLine("MRNA Data:");
-            Console.WriteLine(DNAMachine.Read(0, (DNAMachine.DNAData.Length - 1), Language.MRNA) + "...");
+            Console.WriteLine(DNAMachine.Read(0, 20, Language.MRNA) + "...");
 
             Console.WriteLine("TRNA Data:");
-            Console.WriteLine(DNAMachine.Read(0, (DNAMachine.DNAData.Length - 1), Language.TRNA) + "...");
+            Console.WriteLine(DNAMachine.Read(0, 20, Language.TRNA) + "...");
 
             Console.WriteLine("Amino Acids:");
-            Console.WriteLine(string.Join(" - ", DNAMachine.ReadAminoAcids(0, (DNAMachine.DNAData.Length - 1))));
+            Console.WriteLine(string.Join(" - ", DNAMachine.ReadAminoAcids(0, 20)));
 
             Console.WriteLine("Peptine Bonds:");
-            foreach (List<string> pb in DNAMachine.ReadPeptineBonds(0, (DNAMachine.DNAData.Length - 1)))
+            foreach (List<string> pb in DNAMachine.ReadPeptineBonds(0, 20))
             {
                 Console.WriteLine(string.Join(" - ", pb));
             }

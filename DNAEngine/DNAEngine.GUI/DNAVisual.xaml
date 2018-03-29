@@ -9,7 +9,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -43,5 +45,12 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
+        <Label x:Name="lblStep" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Content="STEP: 20"/>
+
+        <Button x:Name="btnStepDown" Grid.Row="1" Grid.Column="2" Content="Previous" Click="btnStepDown_Click" />
+        <Button x:Name="btnStepUp" Grid.Row="1" Grid.Column="3" Content="Next" Click="btnStepUp_Click"/>
+        
+        <Button x:Name="btnPrevious" Grid.Row="3" Grid.Column="2" Content="Previous" Click="btnPrevious_Click" />
+        <Button x:Name="btnNext" Grid.Row="3" Grid.Column="3" Content="Next" Click="btnNext_Click" />
     </Grid>
 </Window>
