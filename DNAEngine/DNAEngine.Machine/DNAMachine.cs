@@ -93,45 +93,60 @@ namespace DNAEngine.Machine
 
             int remainder = dnaString.Length % 4;
 
-            if (remainder == 1)
+            if (remainder == 0)
             {
-                byte one = Convert.ToByte(64);// 0100 0000 => 64
-                dnaData.Add(one);
+                byte zero = Convert.ToByte(4); //four to remove
+                dnaData.Add(zero);
+            }
+            else if (remainder == 1)
+            {
+                byte three = Convert.ToByte(3); //Three to remove
+                dnaData.Add(three);
             }
             else if (remainder == 2)
             {
-                byte two = Convert.ToByte(16);// 0001 0000 => 16
+                byte two = Convert.ToByte(2); //Two to remove
                 dnaData.Add(two);
             }
             else if (remainder == 3)
             {
-                byte three = Convert.ToByte(4);// 0000 0100 => 4
-                dnaData.Add(three);
+                byte one = Convert.ToByte(1); //One to remove
+                dnaData.Add(one);
             }
 
-            byte packed = 0;
+            
+            byte packedRemainder = 0;
             FileStream fileStream = new FileStream(outputfilelocation, FileMode.Create);
 
+            string toPackRemainder = "";
             for (int s = 0; s < dnaString.Length; s+=4)
             {
+                byte packed = 0;
                 string toPack = "";
                 if ((s + 4) <= dnaString.Length)
                 {
                     toPack = dnaString.Substring(s, 4);
+                    for (int i = 0; i < 4; i++)
+                    {
+                        packed = (byte)(packed | _DNALetters[toPack[i]] << (i * 2));
+                    }
+                    dnaData.Add(packed);
                 }
                 else
                 {
-                    for (int i = 0; i <= (dnaString.Length - s); i++)
-                    {
-                        toPack += "A";
-                    }
-                }
-                for (int i = 0; i < 4; i++)
-                {
-                    packed = (byte)(packed | _DNALetters[toPack[i]] << (i * 2));
-                }
-                dnaData.Add(packed);
+                    toPackRemainder += dnaString.Substring(s, (dnaString.Length - s));
+                }               
             }
+            while (toPackRemainder.Length != 4)
+            {
+                toPackRemainder += "A";
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                packedRemainder = (byte)(packedRemainder | _DNALetters[toPackRemainder[i]] << (i * 2));
+            }
+            dnaData.Add(packedRemainder);
+
             fileStream.Write(dnaData.ToArray(), 0, dnaData.ToArray().Length);
             fileStream.Close();
             return dnaData.ToArray();
@@ -140,10 +155,16 @@ namespace DNAEngine.Machine
         public string Read(int begin, int end, Language language)
         {
             string output = "";
-            for (int i = begin; i <= end; i++)
+            for (int i = (begin + 1); i <= end; i++)
             {
                 output += UnPack(DNAData[i], language);
             }
+            if (end == DNAData.Length -1)
+            {
+                int remainderLength = Convert.ToInt32(DNAData[0]);
+                output = output.Remove((output.Length - remainderLength), remainderLength);     
+            }
+            
             return output;
         }
         private string UnPack(byte pack, Language language)
