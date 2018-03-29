@@ -30,6 +30,7 @@ namespace DNAEngine.Core
             //DNAMachine.LoadDNASequence(filepath + @"\" + DNASequenceFile);
 
             DNAMachine.DNAData = DNAMachine.StringToDNA("TTTCAGTATCTT", filepath + @"\" + ManualDNASequenceFile);
+
             Console.WriteLine("DNA Data:");
             Console.WriteLine(DNAMachine.Read(0, (DNAMachine.DNAData.Length -1), Language.DNA) + "...");
 
@@ -48,8 +49,8 @@ namespace DNAEngine.Core
                 Console.WriteLine(string.Join(" - ", pb));
             }
 
-            //var app = new App();
-            //app.Run(new DNAVisual(DNAMachine));
+            var app = new App();
+            app.Run(new DNAVisual(DNAMachine));
         }
     }
 }
