@@ -1,18 +1,10 @@
 ﻿using DNAEngine.Machine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace DNAEngine.GUI
 {
@@ -51,7 +43,6 @@ namespace DNAEngine.GUI
         {
             if ((endPosition + step) <= (_DNAMachine.DNAData.Length - 1))
             {
-                beginPosition += step;
                 endPosition += step;
             }
             ShowData(beginPosition, endPosition);
@@ -59,18 +50,17 @@ namespace DNAEngine.GUI
 
         private void btnPrevious_Click(object sender, RoutedEventArgs e)
         {
-            if ((beginPosition - step) >= 0)
+            if ((endPosition - step) >= 0)
             {
-                beginPosition -= step;
                 endPosition -= step;
             }
             ShowData(beginPosition, endPosition);
         }
         private void ShowData(int begin, int end)
         {
-            DNAData_Label.Content = _DNAMachine.Read(begin, end, Machine.Language.DNA);
-            MRNAData_Label.Content = _DNAMachine.Read(begin, end, Machine.Language.MRNA);
-            TRNAData_Label.Content = _DNAMachine.Read(begin, end, Machine.Language.TRNA);
+            DNAData_Label.Text = _DNAMachine.Read(begin, end, Machine.Language.DNA);
+            MRNAData_Label.Text = _DNAMachine.Read(begin, end, Machine.Language.MRNA);
+            TRNAData_Label.Text = _DNAMachine.Read(begin, end, Machine.Language.TRNA);
 
             AminoAcids_ListBox.Items.Clear();
             foreach (string aminoacid in _DNAMachine.ReadAminoAcids(begin, end))

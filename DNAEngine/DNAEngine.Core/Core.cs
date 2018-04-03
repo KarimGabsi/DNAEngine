@@ -16,7 +16,16 @@ namespace DNAEngine.Core
             string filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string GeneratedDNASequenceFile = "GenderatedDNASequence.dna";
             string DNASequenceFile = "DNASequence.dna";
-            string ManualDNASequenceFile = "ManualDNASequence.dna";
+            string Molecule1 = "Molecule1.dna";
+            string Molecule2 = "Molecule2.dna";
+            string Molecule3 = "Molecule3.dna";
+            string Molecule4 = "Molecule4.dna";
+            string Molecule5 = "Molecule5.dna";
+            string Molecule6 = "Molecule6.dna";
+            string Molecule7 = "Molecule7.dna";
+            string Molecule8 = "Molecule8.dna";
+            string Molecule9 = "Molecule9.dna";
+            string Molecule10 = "Molecule10.dna";
 
 
             Console.WriteLine("DNA Engine Starting up...");
@@ -26,10 +35,20 @@ namespace DNAEngine.Core
             //Console.WriteLine("Generating  and loading DNA Data...");
             //DNAMachine.GenerateAndLoadDNASequence(filepath + @"\" + GeneratedDNASequenceFile);
 
-            Console.WriteLine("Loading DNA Data...");
-            DNAMachine.LoadDNASequence(filepath + @"\" + DNASequenceFile);
+            //Console.WriteLine("Loading DNA Data...");
+            //DNAMachine.LoadDNASequence(filepath + @"\" + DNASequenceFile);
 
-            //DNAMachine.DNAData = DNAMachine.StringToDNA("TTTCAGTATCTT", filepath + @"\" + ManualDNASequenceFile);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCGTTATACTT", filepath + @"\" + Molecule1);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCGTTGGACTT", filepath + @"\" + Molecule2);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCGTCCCCCTT", filepath + @"\" + Molecule3);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("TTTGTTGGACTT", filepath + @"\" + Molecule4);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCAAAGGACTT", filepath + @"\" + Molecule5);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCGTTGATCGT", filepath + @"\" + Molecule6);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCGGGGGACTT", filepath + @"\" + Molecule7);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCGTTTTATTT", filepath + @"\" + Molecule8);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ACGCGTGGACTT", filepath + @"\" + Molecule9);
+            DNAMachine.DNAData = DNAMachine.StringToDNA("ATCATCTCGATT", filepath + @"\" + Molecule10);
+
 
             Console.WriteLine("DNA Data:");
             Console.WriteLine(DNAMachine.Read(0, 20, Language.DNA) + "...");

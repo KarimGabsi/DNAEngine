@@ -73,7 +73,7 @@ namespace DNAEngine.Machine
             long BasePairs = 3000000000;
             FileStream fileStream = new FileStream(dnaFile, FileMode.Create);
 
-            long chunkSize = (BasePairs / 2) / 4; // 8 million pairs at once (since each byte is 4 nucleotides)
+            long chunkSize = (BasePairs / 2) / 4; // 3 000 000 000 / 2 = 1 500 000 000 / 4 = 375 000 000 bytes / 1024 => 366 211 kb
 
             byte[] chunk = new byte[chunkSize];
             random.NextBytes(chunk);
