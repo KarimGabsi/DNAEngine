@@ -8,7 +8,6 @@ def ReadByteToBits(data, num):
     return (data[base] & (1<<shift)) >> shift   
 
 def main():
-    import random
     import numpy as np
     import os
     
@@ -42,7 +41,6 @@ def main():
                     # Do stuff with byte.
                     for i in range(len(byte)*8):
                         ChromosomeBytes.append(ReadByteToBits(byte, i))
-                    #ChromosomeBytes.append(byte)
                     byte = f.read(1)
                 Chromosomes.append(ChromosomeBytes)
                 X.append(ChromosomeBytes)
@@ -50,12 +48,27 @@ def main():
     
     X = np.array(X)
     Y = np.array(Y)
+    
     import pandas as pd
     df = pd.DataFrame(X)
-    totaldata = len(df.columns)
+    
+    #Feed(input): number of bits (bytes*8)
+    feed = len(df.columns)
+    #Output: Either Black(0) or White(1), 1 output
+    output = 1 
+    #Standard Optimizer
+    optimizer = 'adam'
+    #Standard hidden layers
+    layerCount = 3
+    #Standard Dropout Rate per layer ()
+    dropout = 0.1
+    
     
     import DNA_ANN as dna_ann
-    dna_ann.BuildANN(X,Y,totaldata)
+    #Set Standard Parameters
+    dna_ann.SetANNParameters(feed, output, optimizer, layerCount, dropout)
+    #Build the ANN
+    dna_ann.BuildANN(X,Y)
 
 if __name__ == "__main__":
     main()       
