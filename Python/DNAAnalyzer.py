@@ -51,11 +51,12 @@ def main():
     #Set epochs
     epochs = 50
     
-    #classifier = CreateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs)   
+    classifier = CreateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs)   
     
-    #for layer in classifier.layers: print (layer.get_weights())
-    EvaluateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs)
+    #EvaluateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs)
     
+    for layer in classifier.layers: print (layer.get_weights())
+
 def GenerateBestParameterSet(X, Y, feed, output, parameters, njobs):
     import DNA_ANN as dna_ann  
     #Set Standard Parameters
