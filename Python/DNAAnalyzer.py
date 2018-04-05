@@ -2,73 +2,78 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense
 
-def ReadByteToBits(data, num):
-    base = int(num/8)
-    shift = num % 8
-    return (data[base] & (1<<shift)) >> shift   
-
 def main():
+    
+    filepath = "./DNAs"  
+    import DNA_Reader as dna_reader
+    
+    #Read DNA Folder
+    dna_reader.ReadFolder(filepath)
+    
+    # X (chromosomes)
+    X = dna_reader.Stream.X
+    # Y (results)
+    Y = dna_reader.Stream.Y
+    
+    #Transform to numpy array
     import numpy as np
-    import os
-    
-    filePath = "./DNAs"
-    Specimens = []
-    for specimen in os.listdir(filePath):
-        Specimens.append(specimen)
-        
-    X = []
-    Y = []
-    for specimen in Specimens:
-        ChromosomeFiles = []
-        for file in os.listdir("{0}/{1}".format(filePath, specimen)):
-            if ".dna" in file:
-                ChromosomeFiles.append(file)
-                
-        for file in os.listdir("{0}/{1}".format(filePath, specimen)):
-            if "Result" in file:
-                for i in range(0, len(ChromosomeFiles)):
-                    if(file.split('.')[1] == "White"):
-                        Y.append(1)
-                    else:
-                        Y.append(0)
-        Chromosomes = []
-        ChromosomeBytes = []
-        
-        for i in range(1, (len(ChromosomeFiles) + 1)):
-            with open("{0}/{1}/Chromosome{2}.dna".format(filePath, specimen, i), "rb") as f:
-                byte = f.read(1)
-                while byte != b"":
-                    # Do stuff with byte.
-                    for i in range(len(byte)*8):
-                        ChromosomeBytes.append(ReadByteToBits(byte, i))
-                    byte = f.read(1)
-                Chromosomes.append(ChromosomeBytes)
-                X.append(ChromosomeBytes)
-                ChromosomeBytes = []
-    
     X = np.array(X)
     Y = np.array(Y)
-    
-    import pandas as pd
-    df = pd.DataFrame(X)
-    
+       
     #Feed(input): number of bits (bytes*8)
-    feed = len(df.columns)
+    feed = dna_reader.GetFeed()
     #Output: Either Black(0) or White(1), 1 output
-    output = 1 
-    #Standard Optimizer
-    optimizer = 'adam'
-    #Standard hidden layers
-    layerCount = 3
-    #Standard Dropout Rate per layer ()
-    dropout = 0.1
+    output = dna_reader.GetOutputNodes()
     
+    #njobs (processes) set to 1 if on windows (slower), set to n=number of processes on linux
+    njobs = 1 #if linux ex. 4 (4 processes))
     
-    import DNA_ANN as dna_ann
+    #Set parameters to test on....
+    parameters = {'batch_size': [4, 5, 10],
+                  'epochs': [10, 50],
+                  'optimizer': ['adam', 'rmsprop'],
+                  'layercount' : [3,4],
+                  'dropout': [0.1, 0.2]}
+    #Generate best parameters (WARNING: takes a while...)
+    #GenerateBestParameterSet(X, Y, feed, output, parameters, njobs)
+    #Best Parameters: {'batch_size': 4, 'dropout': 0.2, 'epochs': 50, 'layercount': 4, 'optimizer': 'rmsprop'}
+    #Best Accuracy: 0.5
+    
+    #Use best ANN
+    #Set optimizer to rmsprop
+    optimizer = 'rmsprop'
+    #Set n hidden layers
+    layercount = 4
+    #Set dropout rate per layer
+    dropout = 0.2
+    #Set batchsize
+    batchsize = 4
+    #Set epochs
+    epochs = 50
+    
+    #classifier = CreateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs)   
+    
+    #for layer in classifier.layers: print (layer.get_weights())
+    EvaluateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs)
+    
+def GenerateBestParameterSet(X, Y, feed, output, parameters, njobs):
+    import DNA_ANN as dna_ann  
     #Set Standard Parameters
-    dna_ann.SetANNParameters(feed, output, optimizer, layerCount, dropout)
-    #Build the ANN
-    dna_ann.BuildANN(X,Y)
+    dna_ann.SetANNParameters(feed, output, None, None, None)
+    #Generate best ANN using the parameters
+    dna_ann.GenerateBestANN(X,Y, parameters, njobs)
 
+def CreateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs):  
+    import DNA_ANN as dna_ann  
+    dna_ann.SetANNParameters(feed, output, optimizer, layercount, dropout)
+    classifier = dna_ann.CreateANN(X, Y, batchsize, epochs)
+    return classifier
+
+def EvaluateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs):
+    import DNA_ANN as dna_ann
+    dna_ann.SetANNParameters(feed, output, optimizer, layercount, dropout)
+    dna_ann.EvaluateANN(X, Y, batchsize, epochs, njobs) 
+    
 if __name__ == "__main__":
+    __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
     main()       
