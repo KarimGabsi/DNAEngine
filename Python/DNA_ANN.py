@@ -98,12 +98,12 @@ def BuildClassifier(feed, output, optimizer, layercount, dropout):
     #Initialize ANN   
     classifier = Sequential() 
     #Adding the input layer and first hidden layer   
-    classifier.add(Dense(units = (feed*(layercount + 1)), kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
+    classifier.add(Dense(units = feed, kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
     classifier.add(Dropout(rate = dropout)) #Disable % of nodes
     
-    for i in range(layercount, 1, -1):
+    for i in range(0, layercount):
         #Add hidden layer    
-        classifier.add(Dense(units = (feed*i), kernel_initializer = 'uniform', activation = 'relu')) 
+        classifier.add(Dense(units = feed, kernel_initializer = 'uniform', activation = 'relu')) 
         classifier.add(Dropout(rate = dropout))
 
     #Adding the output layer

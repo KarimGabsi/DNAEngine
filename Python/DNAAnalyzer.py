@@ -8,7 +8,7 @@ def main():
     import DNA_Reader as dna_reader
     
     #Read DNA Folder
-    dna_reader.ReadFolder(filepath)
+    dna_reader.ReadAllInFolder(filepath)
     
     # X (chromosomes)
     X = dna_reader.Stream.X
@@ -54,8 +54,30 @@ def main():
     classifier = CreateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs)   
     
     #EvaluateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs)
+    count = 0
+    for layer in classifier.layers: 
+        print (layer.get_weights())
+        count +=1
+    print ("Weights: {}".format(count))
     
-    for layer in classifier.layers: print (layer.get_weights())
+    #Read one specimen and test if is white or black
+    filepath = "./DNAs/Mouse1"  
+    dna_reader.ReadOneSpecimen(filepath)
+    # X (chromosomes)
+    X = dna_reader.Stream.X
+    # Y (results)
+    Y = dna_reader.Stream.Y
+    
+    #Transform to numpy array
+    import numpy as np
+    X = np.array(X)
+    Y = np.array(Y)
+    
+    new_prediction = classifier.predict(X)
+    new_prediction = (new_prediction > 0.5)
+    print(new_prediction)
+    
+    
 
 def GenerateBestParameterSet(X, Y, feed, output, parameters, njobs):
     import DNA_ANN as dna_ann  

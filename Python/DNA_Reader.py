@@ -16,7 +16,7 @@ def GetFeed():
 def GetOutputNodes():
     return 1 #Either Black or White    
 
-def ReadFolder(filepath):
+def ReadAllInFolder(filepath):
     Stream.X = []
     Stream.Y = []
     Specimens = []
@@ -50,3 +50,34 @@ def ReadFolder(filepath):
                 Chromosomes.append(ChromosomeBytes)
                 Stream.X.append(ChromosomeBytes)
                 ChromosomeBytes = []
+                
+def ReadOneSpecimen(filepath):
+    Stream.X = []
+    Stream.Y = []
+    
+    ChromosomeFiles = []
+    for file in os.listdir("{0}".format(filepath)):
+        if ".dna" in file:
+            ChromosomeFiles.append(file)
+            
+    for file in os.listdir("{0}".format(filepath)):
+        if "Result" in file:
+            for i in range(0, len(ChromosomeFiles)):
+                if(file.split('.')[1] == "White"):
+                    Stream.Y.append(1)
+                else:
+                    Stream.Y.append(0)
+    Chromosomes = []
+    ChromosomeBytes = []
+    for i in range(1, (len(ChromosomeFiles) + 1)):
+        with open("{0}/Chromosome{1}.dna".format(filepath, i), "rb") as f:
+            byte = f.read(1)
+            while byte != b"":
+                # Do stuff with byte.
+                for i in range(len(byte)*8):
+                    ChromosomeBytes.append(ReadByteToBits(byte, i))
+                byte = f.read(1)
+            Chromosomes.append(ChromosomeBytes)
+            Stream.X.append(ChromosomeBytes)
+            ChromosomeBytes = []
+    
