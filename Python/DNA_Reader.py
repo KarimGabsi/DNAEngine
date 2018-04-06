@@ -31,11 +31,11 @@ def ReadAllInFolder(filepath):
                 
         for file in os.listdir("{0}/{1}".format(filepath, specimen)):
             if "Result" in file:
-                for i in range(0, len(ChromosomeFiles)):
-                    if(file.split('.')[1] == "White"):
-                        Stream.Y.append(1)
-                    else:
-                        Stream.Y.append(0)
+                #for i in range(0, len(ChromosomeFiles)):
+                if(file.split('.')[1] == "White"):
+                    Stream.Y.append(1)
+                else:
+                    Stream.Y.append(0)
         Chromosomes = []
         ChromosomeBytes = []
         
@@ -48,8 +48,8 @@ def ReadAllInFolder(filepath):
                         ChromosomeBytes.append(ReadByteToBits(byte, i))
                     byte = f.read(1)
                 Chromosomes.append(ChromosomeBytes)
-                Stream.X.append(ChromosomeBytes)
-                ChromosomeBytes = []
+        Stream.X.append(ChromosomeBytes)
+        #ChromosomeBytes = []
                 
 def ReadOneSpecimen(filepath):
     Stream.X = []
@@ -62,11 +62,11 @@ def ReadOneSpecimen(filepath):
             
     for file in os.listdir("{0}".format(filepath)):
         if "Result" in file:
-            for i in range(0, len(ChromosomeFiles)):
-                if(file.split('.')[1] == "White"):
-                    Stream.Y.append(1)
-                else:
-                    Stream.Y.append(0)
+            #for i in range(0, len(ChromosomeFiles)):
+            if(file.split('.')[1] == "White"):
+                Stream.Y.append(1)
+            else:
+                Stream.Y.append(0)
     Chromosomes = []
     ChromosomeBytes = []
     for i in range(1, (len(ChromosomeFiles) + 1)):
@@ -78,6 +78,6 @@ def ReadOneSpecimen(filepath):
                     ChromosomeBytes.append(ReadByteToBits(byte, i))
                 byte = f.read(1)
             Chromosomes.append(ChromosomeBytes)
-            Stream.X.append(ChromosomeBytes)
-            ChromosomeBytes = []
+    Stream.X.append(ChromosomeBytes)
+    ChromosomeBytes = []
     

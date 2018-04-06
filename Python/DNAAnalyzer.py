@@ -61,7 +61,7 @@ def main():
     print ("Weights: {}".format(count))
     
     #Read one specimen and test if is white or black
-    filepath = "./DNAs/Mouse1"  
+    filepath = "./DNAs/Mouse2"  
     dna_reader.ReadOneSpecimen(filepath)
     # X (chromosomes)
     X = dna_reader.Stream.X
@@ -74,8 +74,11 @@ def main():
     Y = np.array(Y)
     
     new_prediction = classifier.predict(X)
-    new_prediction = (new_prediction > 0.5)
-    print(new_prediction)
+    outcome = (new_prediction > 0.5)
+    if(outcome):
+        print("Mouse prediction is White ({})".format(new_prediction))
+    else:
+        print("Mouse prediction is Black ({})".format(new_prediction))
     
     
 
