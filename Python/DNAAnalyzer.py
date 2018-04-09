@@ -17,8 +17,9 @@ def main():
     filepath = "./DNAs"  
     import DNA_Reader as dna_reader
     
+    precisionoffset = 24
     #Read DNA Folder
-    dna_reader.ReadAllInFolder(filepath)
+    dna_reader.ReadAllSPecimenInFolder(filepath, precisionoffset)
     
     # X (DNA)
     X = dna_reader.Stream.X
@@ -35,7 +36,7 @@ def main():
     #Output: Either Black(0) or White(1), 1 output
     output = dna_reader.GetOutputNodes()
     
-    displayresult.append("DNA READER")
+    displayresult.append("DNA READER with precision offset: {}".format(precisionoffset))
     displayresult.append("X (DNA) Shape: {}".format(X.shape))
     displayresult.append("Y (Result) Shape: {}".format(X.shape))
     displayresult.append("Feed: {}".format(feed))
@@ -84,8 +85,9 @@ def main():
     #print ("Weights: {}".format(count))
     
     #Read one specimen and test if is white or black
-    filepath = "./DNAs/Mouse10"  
-    dna_reader.ReadOneSpecimen(filepath)
+    filepath = "./DNAs"
+    specimen = "Mouse10"
+    dna_reader.ReadOneSpecimen(filepath, specimen, precisionoffset)
     # X (chromosomes)
     X = dna_reader.Stream.X
     # Y (results)
@@ -96,6 +98,7 @@ def main():
     X = np.array(X)
     Y = np.array(Y)
     
+    displayresult.append("DNA READER with precision offset: {}".format(precisionoffset))
     displayresult.append("ONE SPECIMEN")
     displayresult.append("Filepath : {}".format(filepath))
     displayresult.append("X (DNA) Shape: {}".format(X.shape))
@@ -104,7 +107,7 @@ def main():
     displayresult.append("Output: {}".format(output))
     
     new_prediction = classifier.predict(X)
-    outcome = (new_prediction > 0.5)
+    outcome = (new_prediction >= 0.5)
     if(outcome):
         displayresult.append("Mouse prediction is White ({})".format(new_prediction))
     else:
