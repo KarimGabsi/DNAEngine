@@ -1,0 +1,2 @@
+Python ./DNAAnalyzer.py
+PAUSE

@@ -44,8 +44,15 @@ def ReadAllInFolder(filepath):
                 byte = f.read(1)
                 while byte != b"":
                     # Do stuff with byte.
+                    bitarray = []
                     for i in range(len(byte)*8):
-                        ChromosomeBytes.append(ReadByteToBits(byte, i))
+                        bitarray.append(ReadByteToBits(byte, i))
+                    
+                    bitstring = ""
+                    for bit in bitarray:
+                        bitstring += str(bit)
+
+                    ChromosomeBytes.append(int(bitstring, 2))
                     byte = f.read(1)
                 Chromosomes.append(ChromosomeBytes)
         Stream.X.append(ChromosomeBytes)
@@ -74,8 +81,18 @@ def ReadOneSpecimen(filepath):
             byte = f.read(1)
             while byte != b"":
                 # Do stuff with byte.
+                #for i in range(len(byte)*8):
+                    #ChromosomeBytes.append(ReadByteToBits(byte, i))
+                # Do stuff with byte.
+                bitarray = []
                 for i in range(len(byte)*8):
-                    ChromosomeBytes.append(ReadByteToBits(byte, i))
+                    bitarray.append(ReadByteToBits(byte, i))
+                
+                bitstring = ""
+                for bit in bitarray:
+                    bitstring += str(bit)
+
+                ChromosomeBytes.append(int(bitstring, 2))
                 byte = f.read(1)
             Chromosomes.append(ChromosomeBytes)
     Stream.X.append(ChromosomeBytes)

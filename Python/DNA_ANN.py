@@ -7,16 +7,13 @@ class StandardParameters:
     Feed = 0
     Output = 0
     Optimizer = ''
-    LayerCount = 0
-    Dropout = 0.0
     
-def SetANNParameters(feed, output, optimizer, layercount, dropout):
+def SetANNParameters(feed, output, optimizer):
     #Set standard Parameters
     StandardParameters.Feed = feed
     StandardParameters.Output = output
     StandardParameters.Optimizer = optimizer
-    StandardParameters.LayerCount = layercount
-    StandardParameters.Dropout = dropout
+
 #Libraries
 def GenerateBestANN(X,Y, parameters, njobs):  
     
@@ -34,11 +31,11 @@ def GenerateBestANN(X,Y, parameters, njobs):
                                scoring = 'accuracy',
                                cv = 10, n_jobs=njobs)
     grid_search = grid_search.fit(X_train, Y_train)
-    best_parameters = grid_search.best_params_
-    best_accuracy = grid_search.best_score_
+    #best_parameters = grid_search.best_params_
+    #best_accuracy = grid_search.best_score_
     
-    print ("Best Parameters: {0}".format(best_parameters))
-    print ("Best Accuracy: {0}".format(best_accuracy))
+    #print ("Best Parameters: {0}".format(best_parameters))
+    #print ("Best Accuracy: {0}".format(best_accuracy))
 
 def CreateANN(X, Y, batchsize, epochs):
     #Splitting the dataset into Training set and test set
@@ -83,29 +80,21 @@ def EvaluateANN(X, Y, batchsize, epochs, njobs):
 def BuildStandardClassifier():
     return BuildClassifier(StandardParameters.Feed, 
                            StandardParameters.Output, 
-                           StandardParameters.Optimizer, 
-                           StandardParameters.LayerCount,
-                           StandardParameters.Dropout)
+                           StandardParameters.Optimizer)
 
-def BuildBestStandardClassifier(optimizer, layercount, dropout):
+def BuildBestStandardClassifier(optimizer):
     return BuildClassifier(StandardParameters.Feed, 
                            StandardParameters.Output, 
-                           optimizer, 
-                           layercount, 
-                           dropout)
+                           optimizer)
 
-def BuildClassifier(feed, output, optimizer, layercount, dropout):
+def BuildClassifier(feed, output, optimizer):
     #Initialize ANN   
     classifier = Sequential() 
-    #Adding the input layer and first hidden layer   
-    classifier.add(Dense(units = feed, kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
-    classifier.add(Dropout(rate = dropout)) #Disable % of nodes
-    
-    for i in range(0, layercount):
-        #Add hidden layer    
-        classifier.add(Dense(units = feed, kernel_initializer = 'uniform', activation = 'relu')) 
-        classifier.add(Dropout(rate = dropout))
 
+    #Adding the input layer and first hidden layer   
+    classifier.add(Dense(units = int(feed / 2), kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
+    classifier.add(Dropout(rate = 0.2)) #Disable % of nodes
+    
     #Adding the output layer
     classifier.add(Dense(units = output, kernel_initializer = 'uniform', activation = 'sigmoid'))
     #Compile ANN

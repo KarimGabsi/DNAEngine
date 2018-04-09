@@ -31,9 +31,7 @@ def main():
     #Set parameters to test on....
     parameters = {'batch_size': [4, 5, 10],
                   'epochs': [10, 50],
-                  'optimizer': ['adam', 'rmsprop'],
-                  'layercount' : [3,4],
-                  'dropout': [0.1, 0.2]}
+                  'optimizer': ['adam', 'rmsprop'],}
     #Generate best parameters (WARNING: takes a while...)
     #GenerateBestParameterSet(X, Y, feed, output, parameters, njobs)
     #Best Parameters: {'batch_size': 4, 'dropout': 0.2, 'epochs': 50, 'layercount': 4, 'optimizer': 'rmsprop'}
@@ -42,16 +40,12 @@ def main():
     #Use best ANN
     #Set optimizer to rmsprop
     optimizer = 'rmsprop'
-    #Set n hidden layers
-    layercount = 4
-    #Set dropout rate per layer
-    dropout = 0.2
     #Set batchsize
-    batchsize = 4
+    batchsize = 10
     #Set epochs
-    epochs = 50
+    epochs = 100
     
-    classifier = CreateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs)   
+    classifier = CreateANN(X,Y,feed, output, optimizer, batchsize, epochs)   
     
     #EvaluateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs)
     count = 0
@@ -61,7 +55,7 @@ def main():
     print ("Weights: {}".format(count))
     
     #Read one specimen and test if is white or black
-    filepath = "./DNAs/Mouse2"  
+    filepath = "./DNAs/Mouse10"  
     dna_reader.ReadOneSpecimen(filepath)
     # X (chromosomes)
     X = dna_reader.Stream.X
@@ -85,19 +79,19 @@ def main():
 def GenerateBestParameterSet(X, Y, feed, output, parameters, njobs):
     import DNA_ANN as dna_ann  
     #Set Standard Parameters
-    dna_ann.SetANNParameters(feed, output, None, None, None)
+    dna_ann.SetANNParameters(feed, output ,None)
     #Generate best ANN using the parameters
     dna_ann.GenerateBestANN(X,Y, parameters, njobs)
 
-def CreateANN(X, Y, feed, output, optimizer, layercount, dropout, batchsize, epochs):  
+def CreateANN(X, Y, feed, output, optimizer, batchsize, epochs):  
     import DNA_ANN as dna_ann  
-    dna_ann.SetANNParameters(feed, output, optimizer, layercount, dropout)
+    dna_ann.SetANNParameters(feed, output, optimizer)
     classifier = dna_ann.CreateANN(X, Y, batchsize, epochs)
     return classifier
 
-def EvaluateANN(X,Y,feed, output, optimizer, layercount, dropout, batchsize, epochs, njobs):
+def EvaluateANN(X,Y,feed, output, optimizer, batchsize, epochs, njobs):
     import DNA_ANN as dna_ann
-    dna_ann.SetANNParameters(feed, output, optimizer, layercount, dropout)
+    dna_ann.SetANNParameters(feed, output, optimizer)
     dna_ann.EvaluateANN(X, Y, batchsize, epochs, njobs) 
     
 if __name__ == "__main__":
