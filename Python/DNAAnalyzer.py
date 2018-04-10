@@ -9,6 +9,14 @@ def dash():
         dash.append("=")
     dash.append("]")
     return str(dash)
+
+def find_between(s, first, last):
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        return ""
 def main():
     
     displayresult = []
@@ -17,7 +25,8 @@ def main():
     filepath = "./DNAs"  
     import DNA_Reader as dna_reader
     
-    precisionoffset = 24
+    #precision offset must be between 2 and 64-bit, 32 if on 32-bitsystem
+    precisionoffset = 8
     #Read DNA Folder
     dna_reader.ReadAllSPecimenInFolder(filepath, precisionoffset)
     
@@ -62,15 +71,21 @@ def main():
     displayresult.append("GENERATE ANN USING BEST PARAMETERS")
     
     #Use best ANN
-    #Set optimizer to rmsprop
-    optimizer = 'adam'
+    bestOptimizer = find_between(bestparameters[0], "optimizer", "}")
+    bestOptimizer = find_between(bestOptimizer, "': '", "'")
+    optimizer = bestOptimizer
+    displayresult.append("Best Optimizer: {}".format(optimizer))
     #Set batchsize
-    batchsize = 10
+    bestbatchsize = find_between(bestparameters[0], "batch_size\':", ",")
+    batchsize = int(bestbatchsize)
+    displayresult.append("Best Batchsize: {}".format(batchsize))
     #Set epochs
-    epochs = 100
+    bestepochs = find_between(bestparameters[0], "epochs\':", ",")
+    epochs = int(bestepochs)
+    displayresult.append("Best Epochs: {}".format(epochs))
     
     classifier = CreateANN(X,Y,feed, output, optimizer, batchsize, epochs) 
-    displayresult.append("Classifier: {}".format(classifier.get_config()))
+    #displayresult.append("Classifier: {}".format(classifier.get_config()))
     
     evaluation = EvaluateANN(X, Y, feed, output, optimizer, batchsize, epochs)
     displayresult.append("Evaluation: {}".format(evaluation))
@@ -101,6 +116,7 @@ def main():
     displayresult.append("DNA READER with precision offset: {}".format(precisionoffset))
     displayresult.append("ONE SPECIMEN")
     displayresult.append("Filepath : {}".format(filepath))
+    displayresult.append("Specimen: {}".format(specimen))
     displayresult.append("X (DNA) Shape: {}".format(X.shape))
     displayresult.append("Y (Result) Shape: {}".format(X.shape))
     displayresult.append("Feed: {}".format(feed))

@@ -17,6 +17,15 @@ def GetOutputNodes():
     return 1 #Either Black or White    
 
 def ReadSpecimen(filepath, specimen, precisionoffset):
+    #precisionoffset must be between 2 and intsize * 8 bits
+    import sys
+    maxsizeBits = "{0:b}".format(sys.maxsize)
+    maxsize = len(maxsizeBits) + 1
+    if(precisionoffset > maxsize):
+        precisionoffset = maxsize
+    if(precisionoffset < 2):
+        precisionoffset = 2
+        
     ChromosomeFiles = []
     for file in os.listdir("{0}/{1}".format(filepath, specimen)):
         if ".dna" in file:
@@ -63,10 +72,6 @@ def ReadAllSPecimenInFolder(filepath, precisionoffset):
     Stream.X = []
     Stream.Y = []
     Specimens = []
-    
-    import sys
-    if(precisionoffset > sys.getsizeof(int)):
-        precisionoffset = sys.getsizeof(int)
         
     for specimen in os.listdir(filepath):
         Specimens.append(specimen)

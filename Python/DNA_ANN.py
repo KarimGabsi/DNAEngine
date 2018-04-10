@@ -98,8 +98,13 @@ def BuildClassifier(feed, output, optimizer):
     #Initialize ANN   
     classifier = Sequential() 
 
+    #When using real data
+    #hiddenlayersize = feed * 0.000001
+    hiddenlayersize = feed
+    if(hiddenlayersize < 1):
+        hiddenlayersize = 1
     #Adding the input layer and first hidden layer   
-    classifier.add(Dense(units = 4, kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
+    classifier.add(Dense(units = hiddenlayersize, kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
     classifier.add(Dropout(rate = 0.2)) #Disable % of nodes
     
     #Adding the output layer
