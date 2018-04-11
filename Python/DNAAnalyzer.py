@@ -23,7 +23,8 @@ def main():
     displayresult.append(dash())
     
     filepath = "./DNAs"  
-    import DNA_Reader as dna_reader
+    import DNA_Reader
+    dna_reader = DNA_Reader.DNA_Reader()
     
     #precision offset must be between 2 and 64-bit, 32 if on 32-bitsystem
     precisionoffset = 8
@@ -31,9 +32,9 @@ def main():
     dna_reader.ReadAllSPecimenInFolder(filepath, precisionoffset)
     
     # X (DNA)
-    X = dna_reader.Stream.X
+    X = dna_reader.GetX()
     # Y (results)
-    Y = dna_reader.Stream.Y
+    Y = dna_reader.GetY()
     
     #Transform to numpy array
     import numpy as np
@@ -99,14 +100,17 @@ def main():
         #count +=1
     #print ("Weights: {}".format(count))
     
+    import DNA_Reader
+    dna_reader = DNA_Reader.DNA_Reader()
+    precisionoffset = 8
     #Read one specimen and test if is white or black
     filepath = "./DNAs"
     specimen = "Mouse10"
     dna_reader.ReadOneSpecimen(filepath, specimen, precisionoffset)
     # X (chromosomes)
-    X = dna_reader.Stream.X
+    X = dna_reader.GetX()
     # Y (results)
-    Y = dna_reader.Stream.Y
+    Y = dna_reader.GetY()
     
     #Transform to numpy array
     import numpy as np
@@ -132,25 +136,23 @@ def main():
     displayresult.append(dash())
     print(np.array(displayresult))
 
-    
-
 def GenerateBestParameterSet(X, Y, feed, output, parameters, njobs):
-    import DNA_ANN as dna_ann  
-    #Set Standard Parameters
-    dna_ann.SetANNParameters(feed, output ,None)
+    import DNA_ANN
+    dna_ann = DNA_ANN.DNA_ANN(feed, output, None)
+    bestparameters = dna_ann.GenerateBestParameterSet(X, Y, parameters, njobs)
     #Generate best ANN using the parameters
-    return dna_ann.GenerateBestParameterSet(X,Y, parameters, njobs)
+    return bestparameters
 
 def CreateANN(X, Y, feed, output, optimizer, batchsize, epochs):  
-    import DNA_ANN as dna_ann  
-    dna_ann.SetANNParameters(feed, output, optimizer)
+    import DNA_ANN
+    dna_ann = DNA_ANN.DNA_ANN(feed, output, optimizer)
     return dna_ann.CreateANN(X, Y, batchsize, epochs)
 
 def EvaluateANN(X,Y,feed, output, optimizer, batchsize, epochs):
-    import DNA_ANN as dna_ann
-    dna_ann.SetANNParameters(feed, output, optimizer)
+    import DNA_ANN
+    dna_ann = DNA_ANN.DNA_ANN(feed, output, optimizer)
     return dna_ann.EvaluateANN(X, Y, batchsize, epochs) 
     
 if __name__ == "__main__":
-    __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
+    #__spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
     main()       
