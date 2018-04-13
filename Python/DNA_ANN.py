@@ -89,7 +89,7 @@ class DNA_ANN():
             hiddenlayersize = 1
         #Adding the input layer and first hidden layer   
         classifier.add(Dense(units = hiddenlayersize, kernel_initializer = 'uniform', activation = 'relu', input_dim = feed))  
-        classifier.add(Dropout(rate = 0.2)) #Disable % of nodes
+        classifier.add(Dropout(rate = 0.25)) #Disable % of nodes
         
         #Adding the output layer
         classifier.add(Dense(units = output, kernel_initializer = 'uniform', activation = 'sigmoid'))
