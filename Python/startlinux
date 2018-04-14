@@ -1,5 +1,0 @@
-#!/bin/bash
-clear
-echo "Starting DNA Analyzer"
-python DNAAnalyzer.py
-echo "Done"
