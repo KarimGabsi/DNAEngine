@@ -141,11 +141,10 @@ class DNA_Analyzer():
         
         self.displayresult += self.dash()
         self.displayresult += "\nShow Weights"
-        count = 0
+
         for layer in self.classifier.layers:
             self.displayresult += str(layer.get_weights())
-            count +=1
-        self.displayresult += "\nWeights: {}".format(count)
+        self.displayresult += "\nLayers: {}".format(len(self.classifier.layers))
     
     def GenerateBestParameterSet(self, X, Y, feed, output, parameters, njobs):
         import DNA_ANN
