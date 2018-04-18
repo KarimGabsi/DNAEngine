@@ -16,11 +16,22 @@ def main():
     precisionoffset = 8    
     dna_analyzer = DNA_Analyzer.DNA_Analyzer(precisionoffset,os)
     dna_analyzer.Load(filepath)
-    print(dna_analyzer.displayresult)
+    
+    #Set parameters to test on....
+    parameters = {'batch_size': [10, 20],
+                  'epochs': [10, 50, 100],
+                  'optimizer': ['adam', 'rmsprop'],}
+    
+    #Get best parameters
+    bestparameters = dna_analyzer.GetBestParameters(parameters)
+    
+    #Generate ANN using best parameters and evaluate
+    dna_analyzer.GenerateANNWithBestParameters(bestparameters)
     
     #Read one specimen and test if is white or black
     specimen = "Mouse10"
     dna_analyzer.PredictOneSpecimen(filepath, specimen)
+    
     print(dna_analyzer.displayresult)
 
 if __name__ == "__main__": main() 

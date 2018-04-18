@@ -7,6 +7,10 @@ class DNA_Analyzer():
         self.precisionoffset = precisionoffset
         self.displayresult = ""
         self.classifier = None
+        self.X = None
+        self.Y = None
+        self.feed = None
+        self.output = None
         if(os.lower() == "linux"): 
             self.njobs = -1 
         else: 
@@ -38,39 +42,39 @@ class DNA_Analyzer():
         dna_reader.ReadAllSPecimenInFolder(filepath, self.precisionoffset)
         
         # X (DNA String in integer per precisionoffset-sector)
-        X = dna_reader.GetX()
+        self.X = dna_reader.GetX()
         # Y (results)
-        Y = dna_reader.GetY()
+        self.Y = dna_reader.GetY()
         
         #Transform to numpy array
         import numpy as np
-        X = np.array(X)
-        Y = np.array(Y)
+        self.X = np.array(self.X)
+        self.Y = np.array(self.Y)
         
         #Feed(input): number of bits / precisionoffset
-        feed = dna_reader.GetFeed()
+        self.feed = dna_reader.GetFeed()
         #Output: Either Black(0) or White(1), 1 output
-        output = dna_reader.GetOutputNodes()
+        self.output = dna_reader.GetOutputNodes()
         
         self.displayresult += "\nDNA READER with precision offset: {}".format(self.precisionoffset)
-        self.displayresult += "\nX (DNA) Shape: {}".format(X.shape)
-        self.displayresult += "\nY (Result) Shape: {}".format(X.shape)
-        self.displayresult += "\nFeed: {}".format(feed)
-        self.displayresult += "\nOutput: {}".format(output)
+        self.displayresult += "\nX (DNA) Shape: {}".format(self.X.shape)
+        self.displayresult += "\nY (Result) Shape: {}".format(self.X.shape)
+        self.displayresult += "\nFeed: {}".format(self.feed)
+        self.displayresult += "\nOutput: {}".format(self.output)
         self.displayresult += self.dash()
+                  
+    def GetBestParameters(self, parameters):    
         
         self.displayresult += self.dash()
         self.displayresult += "\nBEST PARAMETER GENERATION"
-          
-        #Set parameters to test on....
-        parameters = {'batch_size': [10, 20],
-                      'epochs': [10, 50, 100],
-                      'optimizer': ['adam', 'rmsprop'],}
         self.displayresult += "\nParameters to test: {}".format(parameters)
         #Generate best parameters (WARNING: takes a while...)
-        bestparameters = self.GenerateBestParameterSet(X, Y, feed, output, parameters, self.njobs)
+        bestparameters = self.GenerateBestParameterSet(self.X, self.Y, self.feed, self.output, parameters, self.njobs)
         self.displayresult += "\nParameters Result: {}".format(bestparameters)
         self.displayresult += self.dash()
+        return bestparameters
+    
+    def GenerateANNWithBestParameters(self, bestparameters):
         
         self.displayresult += self.dash()
         self.displayresult += "\nGENERATE ANN USING BEST PARAMETERS"
@@ -89,16 +93,15 @@ class DNA_Analyzer():
         epochs = int(bestepochs)
         self.displayresult  += "\nBest Epochs: {}".format(epochs)
         
-        self.classifier = self.CreateANN(X,Y,feed, output, optimizer, batchsize, epochs) 
+        self.classifier = self.CreateANN(self.X,self.Y,self.feed, self.output, optimizer, batchsize, epochs) 
         #displayresult.append("Classifier: {}".format(classifier.get_config()))
         
-        evaluation = self.EvaluateANN(X, Y, feed, output, optimizer, batchsize, epochs)
+        evaluation = self.EvaluateANN(self.X, self.Y, self.feed, self.output, optimizer, batchsize, epochs)
         self.displayresult += "\nEvaluation: {}".format(evaluation)
         self.displayresult += self.dash()
         
     def PredictOneSpecimen(self, filepath, specimen):
         
-        self.displayresult = ""
         self.displayresult += self.dash()
         self.displayresult += "\nPREDICTING ONE SPECIMEN"
         
