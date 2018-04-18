@@ -28,10 +28,11 @@ def main():
     #Generate ANN using best parameters and evaluate
     dna_analyzer.GenerateANNWithBestParameters(bestparameters)
     
-    #Read one specimen and test if is white or black
+    #Read one specimen and predict if is white or black
     specimen = "Mouse10"
     dna_analyzer.PredictOneSpecimen(filepath, specimen)
     
+    #Show Result
     print(dna_analyzer.displayresult)
 
 if __name__ == "__main__": main() 
